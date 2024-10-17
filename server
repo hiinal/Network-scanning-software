@@ -1,0 +1,25 @@
+from flask import Flask, request, jsonify
+import json
+
+app = Flask(__name__)
+
+
+@app.route("/data", methods=["POST"])
+def receive_data():
+    if request.method == "POST":
+        try:
+            received_data = request.get_json()
+
+            with open("system_info.json", "w") as outfile:
+                json.dump(received_data, outfile, indent=4)
+
+            print("Received data saved to system_info.json")
+            return jsonify({"message": "Data received and saved successfully!"}), 200
+        except Exception as e:
+            print("Error processing data:", e)
+            return jsonify({"error": "An error occurred"}), 500
+
+
+if __name__ == "__main__":
+    app.run(host="192.168.45.13", port=55127)
+
